@@ -65,7 +65,7 @@ public class CharacterBiography : AB
     {
         Console.WriteLine("-- CHARACTER BIOGRAPHY --");
     }
-    //OVERRIDING
+    //METHOD OVERRIDING
     public override void DisplayCharacterBiography(string SQLConnectionString, CharacterBiography myCharacterBio)
     {
         try
@@ -450,7 +450,8 @@ public class Program
         string SQLConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=C:\USERS\ADRIAN\SOURCE\REPOS\CHARACTERCREATIONPROGRAM\CHARACTERCREATIONPROGRAM\DATABASE1.MDF;Integrated Security=True";
 
         // DB connection
-        try
+        // method to delete all character in the DB
+        /*try
         {
             SQLConnect = new SqlConnection(SQLConnectionString);
             SQLConnect.Open();
@@ -468,14 +469,12 @@ public class Program
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-        }
+        }*/
 
         Console.WriteLine("Welcome to Character Creation Program!\n");
 
-        //menu here
+        //MENU METHOD
         CharacterMenu(SQLConnectionString);
-
-        //
 
         //CHARACTER BIOGRAPHY
         CharacterBiography myCharacterBio = new CharacterBiography();
@@ -489,22 +488,6 @@ public class Program
         InputPronouns(myCharacterBio);
         InputBio(myCharacterBio);
 
-        //DBusername, DBnickname, DBgender, DBpronouns, DBbio
-        try
-        {
-            SQLConnect = new SqlConnection(SQLConnectionString);
-            SQLConnect.Open();
-
-            string InsertBioQueryString = "INSERT INTO dbo.Character (username, nickname, gender, pronouns, bio) VALUES('" + myCharacterBio.Username + "', '" + myCharacterBio.Nickname + "', '" + myCharacterBio.Gender + "', '" + myCharacterBio.Pronouns + "', '" + myCharacterBio.Bio + "')";
-            SqlCommand Insert = new SqlCommand(InsertBioQueryString, SQLConnect);
-            Insert.ExecuteNonQuery();
-
-            SQLConnect.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
         Console.WriteLine();
         // myCharacterBio.DisplayCharacterBiography(SQLConnectionString, myCharacterBio);
 
@@ -524,34 +507,7 @@ public class Program
 
         //Accessory
         PickAccessory(myCharacterDesign);
-
-        //skin color, hair_style, hair_color, body_type, shirt_color, pants_color, shoe_color, accessory
-        try
-        {
-            SQLConnect = new SqlConnection(SQLConnectionString);
-            SQLConnect.Open();
-
-            string InsertDesignQueryString = "INSERT INTO dbo.CharacterDesign (username, skin_color, hair_style, hair_color, body_type, shirt_color, pants_color, shoe_color, accessory) " +
-                "VALUES('" +
-                myCharacterBio.Username + "', '" +
-                myCharacterDesign.SkinColor + "', '" +
-                myCharacterDesign.HairStyle + "', '" +
-                myCharacterDesign.HairColor + "', '" +
-                myCharacterDesign.BodyType + "', '" +
-                myCharacterDesign.ShirtColor + "', '" +
-                myCharacterDesign.PantsColor + "', '" +
-                myCharacterDesign.ShoeColor + "', '" +
-                myCharacterDesign.Accessory + "')";
-
-            SqlCommand Insert = new SqlCommand(InsertDesignQueryString, SQLConnect);
-            Insert.ExecuteNonQuery();
-
-            SQLConnect.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        
         Console.WriteLine();
         // myCharacterDesign.DisplayCharacterDesign(SQLConnectionString, myCharacterBio);
 
@@ -567,32 +523,6 @@ public class Program
         PickLegArmor(myCharacterType);
         PickBoots(myCharacterType);
 
-        //character_class, character_element, body_armor, leg_armor, boots
-        try
-        {
-            SQLConnect = new SqlConnection(SQLConnectionString);
-            SQLConnect.Open();
-
-            string InsertTypeQueryString = "INSERT INTO dbo.CharacterType (username, " +
-                "character_class, character_element, body_armor, leg_armor, boots) " +
-                "VALUES('" +
-                myCharacterBio.Username + "', '" +
-                myCharacterType.CharacterClass + "', '" +
-                myCharacterType.CharacterElement + "', '" +
-                myCharacterType.BodyArmor + "', '" +
-                myCharacterType.LegArmor + "', '" +
-                myCharacterType.Boots + "')";
-
-            SqlCommand Insert = new SqlCommand(InsertTypeQueryString, SQLConnect);
-            Insert.ExecuteNonQuery();
-
-            SQLConnect.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-
         Console.WriteLine();
         myCharacterType.DisplayCharacterType(SQLConnectionString, myCharacterBio);
 
@@ -600,28 +530,7 @@ public class Program
         CharacterStats myCharacterStats = new CharacterStats();
         UpgradeCharacterStats(myCharacterStats);
 
-        //strength, dexterity, intelligence
-        try
-        {
-            SQLConnect = new SqlConnection(SQLConnectionString);
-            SQLConnect.Open();
-
-            string InsertStatsQueryString = "INSERT INTO dbo.CharacterStats (username, " +
-                "strength, dexterity, intelligence) VALUES('" +
-                myCharacterBio.Username + "', '" +
-                myCharacterStats.Strength + "', '" +
-                myCharacterStats.Dexterity + "', '" +
-                myCharacterStats.Intelligence + "')";
-
-            SqlCommand Insert = new SqlCommand(InsertStatsQueryString, SQLConnect);
-            Insert.ExecuteNonQuery();
-
-            SQLConnect.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        
         Console.WriteLine();
         // myCharacterStats.DisplayCharacterStats(SQLConnectionString, myCharacterBio);
 
@@ -632,27 +541,63 @@ public class Program
         ChooseCompanion(myCharacterCompanion);
         ChooseCompanionElement(myCharacterCompanion);
 
-        //companion, companion_element
+        // save bio to DB
+        //DBusername, DBnickname, DBgender, DBpronouns, DBbio
         try
         {
-            SQLConnect = new SqlConnection(SQLConnectionString);
-            SQLConnect.Open();
+            SqlConnection SQLConnection = new SqlConnection(SQLConnectionString);
+            SQLConnection.Open();
 
-            string InsertCompanionQueryString = "INSERT INTO dbo.CharacterCompanion (username, " +
-                "companion, companion_element) VALUES('" +
-                myCharacterBio.Username + "', '" +
-                myCharacterCompanion.Companion + "', '" +
+            // Save bio to DB
+            string InsertBioQueryString = "INSERT INTO dbo.Character (username, nickname, gender, pronouns, bio) VALUES('" +
+                myCharacterBio.Username + "', '" + myCharacterBio.Nickname + "', '" +
+                myCharacterBio.Gender + "', '" + myCharacterBio.Pronouns + "', '" + myCharacterBio.Bio + "')";
+
+            SqlCommand InsertBio = new SqlCommand(InsertBioQueryString, SQLConnection);
+            InsertBio.ExecuteNonQuery();
+
+            // Save design to DB
+            string InsertDesignQueryString = "INSERT INTO dbo.CharacterDesign (username, skin_color, hair_style, hair_color, body_type, shirt_color, pants_color, shoe_color, accessory) " +
+                "VALUES('" + myCharacterBio.Username + "', '" + myCharacterDesign.SkinColor + "', '" +
+                myCharacterDesign.HairStyle + "', '" + myCharacterDesign.HairColor + "', '" +
+                myCharacterDesign.BodyType + "', '" + myCharacterDesign.ShirtColor + "', '" +
+                myCharacterDesign.PantsColor + "', '" + myCharacterDesign.ShoeColor + "', '" + myCharacterDesign.Accessory + "')";
+
+            SqlCommand InsertDesign = new SqlCommand(InsertDesignQueryString, SQLConnection);
+            InsertDesign.ExecuteNonQuery();
+
+            // Save type to DB
+            string InsertTypeQueryString = "INSERT INTO dbo.CharacterType (username, character_class, character_element, body_armor, leg_armor, boots) " +
+                "VALUES('" + myCharacterBio.Username + "', '" + myCharacterType.CharacterClass + "', '" +
+                myCharacterType.CharacterElement + "', '" + myCharacterType.BodyArmor + "', '" +
+                myCharacterType.LegArmor + "', '" + myCharacterType.Boots + "')";
+
+            SqlCommand InsertType = new SqlCommand(InsertTypeQueryString, SQLConnection);
+            InsertType.ExecuteNonQuery();
+
+            // Save stats to DB
+            string InsertStatsQueryString = "INSERT INTO dbo.CharacterStats (username, strength, dexterity, intelligence) " +
+                "VALUES('" + myCharacterBio.Username + "', '" + myCharacterStats.Strength + "', '" +
+                myCharacterStats.Dexterity + "', '" + myCharacterStats.Intelligence + "')";
+
+            SqlCommand InsertStats = new SqlCommand(InsertStatsQueryString, SQLConnection);
+            InsertStats.ExecuteNonQuery();
+
+            // Save companion to DB
+            string InsertCompanionQueryString = "INSERT INTO dbo.CharacterCompanion (username, companion, companion_element) " +
+                "VALUES('" + myCharacterBio.Username + "', '" + myCharacterCompanion.Companion + "', '" +
                 myCharacterCompanion.CompanionElement + "')";
 
-            SqlCommand Insert = new SqlCommand(InsertCompanionQueryString, SQLConnect);
-            Insert.ExecuteNonQuery();
+            SqlCommand InsertCompanion = new SqlCommand(InsertCompanionQueryString, SQLConnection);
+            InsertCompanion.ExecuteNonQuery();
 
-            SQLConnect.Close();
+            SQLConnection.Close();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
+
         Console.WriteLine();
         // myCharacterCompanion.DisplayCharacterCompanion(SQLConnectionString, myCharacterBio);
 
@@ -673,6 +618,7 @@ public class Program
                     myCharacterDesign.DisplayCharacterDesign(SQLConnectionString, myCharacterBio);
                     myCharacterType.DisplayCharacterType(SQLConnectionString, myCharacterBio);
                     myCharacterStats.DisplayCharacterStats(SQLConnectionString, myCharacterBio);
+                    myCharacterCompanion.DisplayCharacterCompanion(SQLConnectionString, myCharacterBio);
                     break;
                 }
                 else if (choice.Equals("2"))
@@ -755,6 +701,19 @@ public class Program
             Console.WriteLine("Enter username that you want to delete: ");
             String DeleteCharacter = Console.ReadLine();
 
+            while (true) {
+                if (!String.IsNullOrWhiteSpace(DeleteCharacter))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Oops! Invaalid input. Please enter a character.");
+                    CharacterMenu(SQLConnectionString);
+                    break;
+                }
+            }
+
             // check if the username is in the DB exist
             SqlConnection SQLConnect;
             SQLConnect = new SqlConnection(SQLConnectionString);
@@ -777,22 +736,21 @@ public class Program
                     if (!String.IsNullOrEmpty(DeleteCharacter))
                     {
                         //enter method here to delete a character
+                        try
+                        {
+                            string DeleteCharacterQuery = "DELETE FROM dbo.Character WHERE username = '" + DeleteCharacter + "'";
+                            SqlConnection SqlConnect;
+                            SqlConnect = new SqlConnection(SQLConnectionString);
+                            SqlConnect.Open();
 
-                        string DeleteCharacterQuery = "DELETE FROM dbo.Character WHERE username = '" + DeleteCharacter + "'\n" +
-                            "DELETE FROM dbo.CharacterDesign WHERE username = '" + DeleteCharacter + "'\n" +
-                            "DELETE FROM dbo.CharacterType WHERE username = '" + DeleteCharacter + "'\n" +
-                            "DELETE FROM dbo.CharacterCompanion WHERE username = '" + DeleteCharacter + "'\n" +
-                            "DELETE FROM dbo.CharacterStats WHERE username = '" + DeleteCharacter + "'\n" +
-                            "DELETE FROM dbo.CharacterExperience WHERE username = '" + DeleteCharacter + "'";
-                        SqlConnection SqlConnect;
-                        SqlConnect = new SqlConnection(SQLConnectionString);
-                        SqlConnect.Open();
+                            SqlCommand Delete = new SqlCommand(DeleteCharacterQuery, SqlConnect);
+                            Delete.ExecuteNonQuery();
 
-                        SqlCommand Delete = new SqlCommand(DeleteCharacterQuery, SqlConnect);
-                        Delete.ExecuteNonQuery();
-
-                        Console.WriteLine("Character Successfully Deleted.\n");
-
+                            Console.WriteLine("Character Successfully Deleted.\n");
+                        } catch(Exception ex)
+                        {
+                            Console.WriteLine("Error:" +  ex.Message);
+                        }
                         Main(null);
                     }
                     else if (String.IsNullOrEmpty(DeleteCharacter))
@@ -1523,19 +1481,45 @@ public class Program
 
     private static void InputUsername(CharacterBiography myCharacterBio, string SQLConnectionString)
     {
-        Console.WriteLine("Enter your Username:\t(Maximum of 20 Characters)");
-        string username = Console.ReadLine();
+        while (true)
+        {
+            Console.WriteLine("Enter your Username:\t(Maximum of 20 Characters)");
+            string username = Console.ReadLine();
 
-        // method to check username if exist
+            // method to check username if exist
+            if (CheckIfUsernameExist(myCharacterBio, SQLConnectionString, username))
+            {
+                Console.WriteLine("Oops! Username already taken. Please use a different username.");
+            }
+            else if (String.IsNullOrEmpty(username))
+            {
+                Console.WriteLine("Oops! Username cannot be Empty. Please try again.");
+            }
+            else if (username.Length > 20)
+            {
+                Console.WriteLine("Oops! Username cannot be more than 20 characters. Try Again.");
+            }
+            else if (username.Contains(" "))
+            {
+                Console.WriteLine("Oops! Username can't contain whitespaces. Please try again.");
+            }
+            else
+            {
+                myCharacterBio.Username = username;
+                break;
+            }
+        }
+    }
 
-        SqlConnection SQLConnect;
-        SQLConnect = new SqlConnection(SQLConnectionString);
+    private static bool CheckIfUsernameExist(CharacterBiography myCharacterBio, string SQLConnectionString, string username)
+    {
+        SqlConnection SQLConnect = new SqlConnection(SQLConnectionString);
         SQLConnect.Open();
 
         string CheckUsernameIfExistQuery = "SELECT * FROM dbo.Character WHERE username = '" + username + "'";
 
         SqlCommand CheckUsername = new SqlCommand(CheckUsernameIfExistQuery, SQLConnect);
-        
+
         SqlDataReader reader = CheckUsername.ExecuteReader();
         string usernameInDB;
 
@@ -1545,32 +1529,10 @@ public class Program
 
             if (String.Compare(username, usernameInDB, StringComparison.OrdinalIgnoreCase) == 0)
             {
-                Console.WriteLine("Oops! username already taken. Please use different username.");
-                InputUsername(myCharacterBio, SQLConnectionString);
+                return true;
             }
         }
+        return false;
         SQLConnect.Close();
-        //
-
-        //data validation
-        if (String.IsNullOrEmpty(username))
-        {
-            Console.WriteLine("Oops! Username cannot be Empty. Please try again.");
-            InputUsername(myCharacterBio, SQLConnectionString);
-        }
-        else if (username.Length > 20)
-        {
-            Console.WriteLine("Oops! Username cannot be more than 20 characters. Try Again.");
-            InputUsername(myCharacterBio, SQLConnectionString);
-        }
-        else if (username.Contains(" "))
-        {
-            Console.WriteLine("Oops! username can't contain whitespaces. Please try again.");
-            InputUsername(myCharacterBio, SQLConnectionString);
-        }
-        else
-        {
-            myCharacterBio.Username = username;
-        }
     }
 }
